@@ -4,6 +4,7 @@ import { BsFillTrashFill } from "react-icons/bs"
 import { TbLeaf } from "react-icons/tb"
 import { useForm, useFieldArray } from "react-hook-form";
 import { CreateProjectDto, ProjectForm as IProjectForm, Project, UpdateProjectDto } from "../../interfaces/project.interface";
+import { GenericError } from "../../interfaces/generic-error.interface";
 import { useCallback, useContext, useEffect, useState } from "react";
 import { createProjectDefaultValues } from "../../constants/project.constants";
 import ProjectsService from "../../services/ProjectsService";
@@ -78,17 +79,19 @@ export default function ProjectForm() {
         const projectResponse = id ? await ProjectsService.updateProject(project as UpdateProjectDto) : await ProjectsService.createProject(project as CreateProjectDto);
         setIsProcessing(false);
 
-        const { title, description } = getProjectResponseTranslation(!!projectResponse, !!id);
+        const isSuccess = !!projectResponse && !(projectResponse as GenericError).statusCode
+
+        const { title, description } = getProjectResponseTranslation(isSuccess, !!id);
 
         toast({
             title,
             description,
-            status: projectResponse ? 'success' : 'error',
+            status: isSuccess ? 'success' : 'error',
             duration: 9000,
             isClosable: true,
         })
 
-        if (projectResponse) {
+        if (isSuccess) {
             navigate("/projects")
         }
     }

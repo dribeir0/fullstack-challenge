@@ -1,3 +1,4 @@
+import { GenericError } from "../interfaces/generic-error.interface";
 import { CreateProjectDto, DeleteProjectResult, Project, UpdateProjectDto, UpdateProjectResult } from "../interfaces/project.interface";
 import HTTPService from "./HTTPService";
 import LocalStorageService from "./LocalStorageService";
@@ -25,7 +26,7 @@ class ProjectsService {
         }
     }
 
-    public async updateProject(updatedProject: UpdateProjectDto): Promise<UpdateProjectResult | undefined> {
+    public async updateProject(updatedProject: UpdateProjectDto): Promise<UpdateProjectResult | GenericError | undefined> {
         try {
             const jwtToken = LocalStorageService.getJwtToken()
             return HTTPService.put(`projects/${updatedProject.id}`, updatedProject, jwtToken)
@@ -35,7 +36,7 @@ class ProjectsService {
     }
 
 
-    public async createProject(createProjectDto: CreateProjectDto): Promise<Project | undefined> {
+    public async createProject(createProjectDto: CreateProjectDto): Promise<Project | GenericError | undefined> {
         try {
             const jwtToken = LocalStorageService.getJwtToken()
             return HTTPService.post<Project>(`projects/create`, createProjectDto, jwtToken)
