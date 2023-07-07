@@ -1,19 +1,21 @@
-import { Box, Button, Flex } from "@chakra-ui/react";
+import { Button, Flex } from "@chakra-ui/react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { useNavigate } from "react-router";
 import Menu from "../components/menu/Menu";
 import { SignInButton } from "../components/SignInButton";
 import { translate } from "../utils/language.utils";
+import { useAuth } from "../hooks/useAuth";
 
 export default function Header() {
     const navigate = useNavigate()
+    const { user } = useAuth()
 
     return (
         <header>
             <Flex justifyContent='space-between' p={6}>
                 <Menu />
                 <Flex alignItems='center' gap={4}>
-                    <Button
+                    {user && <Button
                         variant="outline"
                         id='new-project'
                         leftIcon={<AiOutlinePlus />}
@@ -22,7 +24,8 @@ export default function Header() {
                         }}
                     >
                         {translate('NEW_PROJECT')}
-                    </Button>
+                    </Button> 
+                    }
                     <SignInButton />
                 </Flex>
 

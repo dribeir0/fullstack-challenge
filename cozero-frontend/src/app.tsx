@@ -12,6 +12,7 @@ import { ProjectViewPage } from './projects/view'
 import { Auth, AuthContext, AuthContextType } from '../context/auth'
 import { useState } from 'react'
 import { UserLoginDTO } from '../interfaces/user.dto'
+import DeletedProjectsPage from './projects/deleted'
 function App() {
   const [context, setContext] = useState<Auth>()
 
@@ -33,6 +34,7 @@ function App() {
               <Route path='/projects/create' element={<CreateProjectPage />} />
               <Route path='/projects/:id' element={<ProjectViewPage />} />
               <Route path='/projects/:id/edit' element={<CreateProjectPage />} />
+              <Route path='/projects/deleted' element={<DeletedProjectsPage />} />
             </Routes>
           </Layout>
         </BrowserRouter>
