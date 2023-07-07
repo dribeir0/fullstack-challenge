@@ -1,4 +1,4 @@
-import { Body, Controller, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { SkipAuth } from 'src/decorators/skipAuth.decorator';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UsersService } from './users.service';
@@ -11,5 +11,11 @@ export class UsersController {
   @Post('sign-up')
   create(@Body() user: UserLoginDto) {
     return this.userService.create(user);
+  }
+
+  @SkipAuth()
+  @Get()
+  findAll() {
+    return this.userService.findAll();
   }
 }

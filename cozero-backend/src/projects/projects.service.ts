@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ILike, Repository } from 'typeorm';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './entities/project.entity';
@@ -30,5 +30,14 @@ export class ProjectsService {
 
   async remove(id: number) {
     return this.projectsRepository.delete(id);
+  }
+
+  async search(searchTerm: string) {
+    return this.projectsRepository.find({
+      where: [
+        { name: ILike(`%${searchTerm || ''}%`) },
+        { description: ILike(`%${searchTerm || ''}%`) },
+      ],
+    });
   }
 }

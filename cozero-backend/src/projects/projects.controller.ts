@@ -42,4 +42,10 @@ export class ProjectsController {
   remove(@Param('id') id: string) {
     return this.projectsService.remove(+id);
   }
+
+  @SkipAuth()
+  @Get('search/:searchTerm')
+  search(@Param('searchTerm') searchTerm: string) {
+    return this.projectsService.search(searchTerm);
+  }
 }
