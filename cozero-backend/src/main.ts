@@ -6,11 +6,7 @@ declare const module: any;
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
-  app.useGlobalPipes(
-    new ValidationPipe({
-      disableErrorMessages: true,
-    }),
-  );
+  app.useGlobalPipes(new ValidationPipe());
   await app.listen(3001);
 
   if (module.hot) {

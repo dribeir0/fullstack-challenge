@@ -1,4 +1,3 @@
-import { IsNotEmpty } from 'class-validator';
 import {
   Entity,
   Column,
@@ -29,7 +28,6 @@ export class Project {
   owner: string;
 
   @Column('simple-array')
-  @IsNotEmpty()
   listing: string[];
 
   @CreateDateColumn()
