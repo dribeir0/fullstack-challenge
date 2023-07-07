@@ -1,10 +1,11 @@
-import { ArrayNotEmpty, IsNotEmpty } from 'class-validator';
+import { IsNotEmpty } from 'class-validator';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  DeleteDateColumn,
 } from 'typeorm';
 
 @Entity()
@@ -36,4 +37,7 @@ export class Project {
 
   @UpdateDateColumn()
   updatedAt: string;
+
+  @DeleteDateColumn()
+  deletedAt: string;
 }

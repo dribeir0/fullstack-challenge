@@ -28,6 +28,12 @@ export class ProjectsController {
   }
 
   @SkipAuth()
+  @Get('soft-deleted')
+  findSoftDeleted() {
+    return this.projectsService.findSoftDeleted();
+  }
+
+  @SkipAuth()
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.projectsService.findOne(+id);

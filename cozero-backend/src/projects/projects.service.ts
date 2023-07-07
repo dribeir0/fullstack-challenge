@@ -20,6 +20,10 @@ export class ProjectsService {
     return this.projectsRepository.find();
   }
 
+  async findSoftDeleted(): Promise<Project[]> {
+    return this.projectsRepository.find({ withDeleted: true });
+  }
+
   async findOne(id: number) {
     return await this.projectsRepository.findOneBy({ id });
   }
@@ -29,7 +33,7 @@ export class ProjectsService {
   }
 
   async remove(id: number) {
-    return this.projectsRepository.delete(id);
+    return this.projectsRepository.softDelete({ id });
   }
 
   async search(searchTerm: string) {
