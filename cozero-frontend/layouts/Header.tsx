@@ -8,14 +8,13 @@ import { useAuth } from "../hooks/useAuth";
 
 export default function Header() {
     const navigate = useNavigate()
-    const { user } = useAuth()
 
     return (
         <header>
             <Flex justifyContent='space-between' p={6}>
                 <Menu />
                 <Flex alignItems='center' gap={4}>
-                    {user && <Button
+                    <Button
                         variant="outline"
                         id='new-project'
                         leftIcon={<AiOutlinePlus />}
@@ -25,7 +24,6 @@ export default function Header() {
                     >
                         {translate('NEW_PROJECT')}
                     </Button> 
-                    }
                     <SignInButton />
                 </Flex>
 

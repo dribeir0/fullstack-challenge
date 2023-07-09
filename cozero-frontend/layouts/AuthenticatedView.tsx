@@ -11,14 +11,9 @@ export default function AuthenticatedView({ children }: Props) {
     const navigate = useNavigate()
 
     useEffect(() => {
-      if (status === "loading") {
-        return
-      }
-
       if (!isUser) {
         navigate("/sign-in")
       }
-
     }, [])
 
     if (isUser) {
