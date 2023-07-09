@@ -6,27 +6,22 @@ import ProjectsService from "../../services/ProjectsService";
 import { translate } from "../../utils/language.utils";
 import ProjectItem from "./ProjectItem";
 import { useNavigate } from "react-router";
+import { useSelector } from "react-redux";
+import { AppDispatch, RootState, useAppDispatch } from "../../store/store";
+import { fetchProjects } from "../../store/projectsSlice";
 
 export default function ProjectsList() {
-    const [projectList, setProjectList] = useState<Project[]>([])
-    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const dispatch: AppDispatch = useAppDispatch();
+
+    const projectList = useSelector((state: RootState) => state.projects.data)
+    const isLoading  = useSelector((state: RootState) => state.projects.isLoading)
+
     const navigate = useNavigate()
     const toast = useToast();
 
-
-
-    const fetchProjects = useCallback(async () => {
-        const projects = await ProjectsService.fetchProjects()
-        if (projects && projects?.length !== 0) {
-            setProjectList(projects)
-        }
-        setIsLoading(false)
-    }, [])
-
     useEffect(() => {
-        fetchProjects()
-    }, [fetchProjects])
-
+        dispatch(fetchProjects())
+    }, [dispatch]);
 
     const onDelete = async (projectId: string) => {
         const deletedProject = await ProjectsService.deleteProject(projectId)
@@ -39,9 +34,9 @@ export default function ProjectsList() {
             isClosable: true,
         })
 
-        if (deletedProject) {
-            setProjectList(projectList.filter(project => project.id !== projectId))
-        }
+        // if (deletedProject) {
+        //     setProjectList(projectList.filter(project => project.id !== projectId))
+        // }
     }
 
     if (projectList.length === 0 && !isLoading) {

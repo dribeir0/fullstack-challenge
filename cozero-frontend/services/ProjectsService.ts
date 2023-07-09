@@ -4,15 +4,15 @@ import HTTPService from "./HTTPService";
 import LocalStorageService from "./LocalStorageService";
 
 class ProjectsService {
-    public async fetchProjects(): Promise<Project[] | undefined> {
+    public async fetchProjects(): Promise<Project[]> {
         try {
             const projects = await HTTPService.get<Project[]>(`projects`)
 
-            return this.sortProjects(projects)
+            return this.sortProjects(projects ?? [])
         }
         catch (e) {
             console.log('Error fetching projects', e)
-            return Promise.resolve([])
+            throw Error()
         }
     }
 
@@ -55,8 +55,8 @@ class ProjectsService {
         }
     }
 
-    public sortProjects = (projects: Project[] | undefined) => {
-        return projects?.sort((a, b) => {
+    public sortProjects = (projects: Project[]) => {
+        return projects.sort((a, b) => {
             return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
         }
         );
