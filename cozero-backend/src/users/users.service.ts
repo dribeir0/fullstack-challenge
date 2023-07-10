@@ -1,4 +1,10 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import {
+  forwardRef,
+  HttpException,
+  HttpStatus,
+  Inject,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserLoginDto } from './dto/user-login.dto';
@@ -29,6 +35,8 @@ export class UsersService {
 
     if (!user) {
       user = await this.usersRepository.save(userWithHashedPassword);
+    } else {
+      throw new DuplicateEmailException();
     }
 
     return this.authService.login(createUserDto);
@@ -45,5 +53,11 @@ export class UsersService {
 
   async remove(id: number) {
     await this.usersRepository.delete(id);
+  }
+}
+
+export class DuplicateEmailException extends HttpException {
+  constructor() {
+    super('Email already exists', HttpStatus.BAD_REQUEST);
   }
 }
