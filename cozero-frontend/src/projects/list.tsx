@@ -16,28 +16,28 @@ const ProjectListPage = () => {
         (state: RootState) => state.projectsState.isLoading
     )
     const error = useSelector((state: RootState) => state.projectsState.error)
+
     const page = useSelector(
         (state: RootState) => state.projectsState.projects?.page
     )
 
     const [searchTerm, setSearchTerm] = useState<string>('')
 
-    useEffect(() => {
-        dispatch(fetchProjects({ page: 1, searchTerm }))
-    }, [])
-
     const fetchMore = () => {
         dispatch(fetchProjects({ page: +(page ?? 0) + 1, searchTerm }))
     }
 
-    const onDelete = async (projectId: string) => {
+    const onDelete = (projectId: string) => {
         dispatch(deleteProject(projectId))
     }
 
-    const onSearch = async (searchTerm: string) => {
-        console.log('🚀  file: list.tsx:38  searchTerm:', searchTerm)
-        dispatch(fetchProjects({ page: 1, searchTerm }))
+    const onSearch = (searchTerm: string) => {
+        setSearchTerm(searchTerm)
     }
+
+    useEffect(() => {
+        dispatch(fetchProjects({ page: 1, searchTerm }))
+    }, [searchTerm])
 
     return (
         <Stack spacing={8}>
