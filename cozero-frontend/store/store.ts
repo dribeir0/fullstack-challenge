@@ -1,11 +1,13 @@
-import { configureStore } from "@reduxjs/toolkit";
-import projectsSlice from "./projectsSlice";
-import { useDispatch } from "react-redux";
+import { configureStore } from '@reduxjs/toolkit'
+import projectsSlice from './projectsSlice'
+import projectDetailsSlice from './projectDetailsSlice'
+import { useDispatch } from 'react-redux'
 
 export const store = configureStore({
-  reducer: {
-    projectsState: projectsSlice
-  }
+    reducer: {
+        projectsState: projectsSlice,
+        projectDetailsState: projectDetailsSlice,
+    },
 })
 
 export type RootState = ReturnType<typeof store.getState>
