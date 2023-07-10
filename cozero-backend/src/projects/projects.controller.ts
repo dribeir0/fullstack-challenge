@@ -7,6 +7,7 @@ import {
   Delete,
   Put,
   Query,
+  Patch,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -24,14 +25,21 @@ export class ProjectsController {
 
   @SkipAuth()
   @Get()
-  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
-    return this.projectsService.findAll(page, limit);
+  findAll(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+    @Query('searchTerm') searchTerm: string = '',
+  ) {
+    return this.projectsService.findAll(page, limit, searchTerm);
   }
 
   @SkipAuth()
-  @Get('soft-deleted')
-  findSoftDeleted() {
-    return this.projectsService.findSoftDeleted();
+  @Get('deleted')
+  findSoftDeleted(
+    @Query('page') page: number = 1,
+    @Query('limit') limit: number = 10,
+  ) {
+    return this.projectsService.findSoftDeleted(page, limit);
   }
 
   @SkipAuth()
@@ -50,9 +58,8 @@ export class ProjectsController {
     return this.projectsService.remove(+id);
   }
 
-  @SkipAuth()
-  @Get('search/:searchTerm')
-  search(@Param('searchTerm') searchTerm: string) {
-    return this.projectsService.search(searchTerm);
+  @Patch(':id')
+  restore(@Param('id') id: string) {
+    return this.projectsService.restore(+id);
   }
 }

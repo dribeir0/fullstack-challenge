@@ -12,11 +12,11 @@ import LocalStorageService from './LocalStorageService'
 class ProjectsService {
     public async fetchProjects(
         page: number,
-        limit: number = 10
+        searchTerm: string = ''
     ): Promise<ListResponse<Project> | undefined> {
         try {
             const projects = await HTTPService.get<ListResponse<Project>>(
-                `projects?page=${page}`
+                `projects?page=${page}&searchTerm=${searchTerm}`
             )
 
             return projects
@@ -75,6 +75,32 @@ class ProjectsService {
             return HTTPService.delete(`projects/${id}`, jwtToken)
         } catch (e) {
             console.log('Error deleting project', e)
+        }
+    }
+
+    public async restoreProject(
+        id: string
+    ): Promise<DeleteProjectResult | undefined> {
+        try {
+            const jwtToken = LocalStorageService.getJwtToken()
+            return HTTPService.patch(`projects/${id}`, jwtToken)
+        } catch (e) {
+            console.log('Error deleting project', e)
+        }
+    }
+
+    public async fetchDeletedProjects(
+        page: number
+    ): Promise<ListResponse<Project> | undefined> {
+        try {
+            const jwtToken = LocalStorageService.getJwtToken()
+            return await HTTPService.get<ListResponse<Project>>(
+                `projects/deleted?page=${page}`,
+                jwtToken
+            )
+        } catch (e) {
+            console.log('Error fetching deleted projects', e)
+            throw Error()
         }
     }
 }

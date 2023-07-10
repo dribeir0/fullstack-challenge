@@ -11,11 +11,11 @@ import { ListResponse } from '../interfaces/list.interface'
 
 export const fetchProjects = createAsyncThunk<
     ListResponse<Project> | undefined,
-    number,
+    { page: number; searchTerm: string },
     { rejectValue: string }
->('fetchProjects', async (page, { rejectWithValue }) => {
+>('fetchProjects', async ({ page, searchTerm }, { rejectWithValue }) => {
     try {
-        return await ProjectsService.fetchProjects(page)
+        return await ProjectsService.fetchProjects(page, searchTerm)
     } catch (e) {
         return rejectWithValue('Failed to fetch projects')
     }

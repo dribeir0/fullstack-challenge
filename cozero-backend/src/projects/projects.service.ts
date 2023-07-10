@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ILike, Repository } from 'typeorm';
+import { ILike, IsNull, Not, Repository } from 'typeorm';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './entities/project.entity';
@@ -17,9 +17,21 @@ export class ProjectsService {
     return await this.projectsRepository.save(createProjectDto);
   }
 
-  async findAll(page: number, limit: number): Promise<PaginatedProjectsDto> {
+  private async findPaginated(
+    page: number,
+    limit: number,
+    searchTerm = '',
+    softDeleted = false,
+  ) {
     const skip = (page - 1) * limit;
     const [data, totalItems] = await this.projectsRepository.findAndCount({
+      where: [
+        { name: ILike(`%${searchTerm}%`) },
+        { description: ILike(`%${searchTerm}%`) },
+      ],
+      ...(softDeleted
+        ? { withDeleted: softDeleted, where: { deletedAt: Not(IsNull()) } }
+        : {}),
       skip,
       take: limit,
     });
@@ -33,8 +45,19 @@ export class ProjectsService {
     };
   }
 
-  async findSoftDeleted(): Promise<Project[]> {
-    return this.projectsRepository.find({ withDeleted: true });
+  async findAll(
+    page: number,
+    limit: number,
+    searchTerm: string,
+  ): Promise<PaginatedProjectsDto> {
+    return await this.findPaginated(page, limit, searchTerm);
+  }
+
+  async findSoftDeleted(
+    page: number,
+    limit: number,
+  ): Promise<PaginatedProjectsDto> {
+    return await this.findPaginated(page, limit, '', true);
   }
 
   async findOne(id: number) {
@@ -49,12 +72,11 @@ export class ProjectsService {
     return this.projectsRepository.softDelete({ id });
   }
 
-  async search(searchTerm: string) {
-    return this.projectsRepository.find({
-      where: [
-        { name: ILike(`%${searchTerm || ''}%`) },
-        { description: ILike(`%${searchTerm || ''}%`) },
-      ],
-    });
+  async search(page: number, limit: number, searchTerm: string) {
+    return await this.findPaginated(page, limit, searchTerm);
+  }
+
+  async restore(id: number) {
+    return this.projectsRepository.restore({ id });
   }
 }
