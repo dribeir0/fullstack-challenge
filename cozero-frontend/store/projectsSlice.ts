@@ -1,27 +1,28 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { Project } from "../interfaces/project.interface";
 import ProjectsService from "../services/ProjectsService";
+import { ListResponse } from "../interfaces/list.interface";
 
-export const fetchProjects = createAsyncThunk<Project[], void, {rejectValue: string}>(
+export const fetchProjects = createAsyncThunk<ListResponse<Project> | undefined, number, {rejectValue: string}>(
   'fetchProjects',
-  async (_, thunkAPI) => {
+  async (page, {rejectWithValue}) => {
     try {
-      return await ProjectsService.fetchProjects()
+      return await ProjectsService.fetchProjects(page)
     } catch(e) {
-      return thunkAPI.rejectWithValue('Failed to fetch projects')
+      return rejectWithValue('Failed to fetch projects')
     }
   }
 )
 
 
 export interface ProjectsState {
-  data: Project[];
+  projects: ListResponse<Project> | undefined;
   isLoading: boolean;
   error?: string;
 }
 
 const initialState: ProjectsState = {
-  data: [],
+  projects: undefined,
   isLoading: false,
   error: undefined
 }
@@ -38,7 +39,16 @@ export const projectsSlice = createSlice({
       })
       .addCase(fetchProjects.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.data = action.payload;
+        if(action.payload) {
+          const { data, page, perPage, totalItems, totalPages } = action.payload;
+          state.projects = {
+            data: state.projects ? state.projects.data.concat(data) : data,
+            page,
+            perPage,
+            totalItems,
+            totalPages
+          }
+        }
       })
       .addCase(fetchProjects.rejected, (state, action) => {
         state.isLoading = false;

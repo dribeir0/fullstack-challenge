@@ -1,14 +1,15 @@
 import { GenericError } from "../interfaces/generic-error.interface";
+import { ListResponse } from "../interfaces/list.interface";
 import { CreateProjectDto, DeleteProjectResult, Project, UpdateProjectDto, UpdateProjectResult } from "../interfaces/project.interface";
 import HTTPService from "./HTTPService";
 import LocalStorageService from "./LocalStorageService";
 
 class ProjectsService {
-    public async fetchProjects(): Promise<Project[]> {
+    public async fetchProjects(page: number, limit: number = 10): Promise<ListResponse<Project> | undefined> {
         try {
-            const projects = await HTTPService.get<Project[]>(`projects`)
+            const projects = await HTTPService.get<ListResponse<Project>>(`projects?page=${page}`)
 
-            return this.sortProjects(projects ?? [])
+            return projects
         }
         catch (e) {
             console.log('Error fetching projects', e)
@@ -54,14 +55,6 @@ class ProjectsService {
             console.log('Error deleting project', e)
         }
     }
-
-    public sortProjects = (projects: Project[]) => {
-        return projects.sort((a, b) => {
-            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        }
-        );
-    }
-
 }
 
 export default new ProjectsService()

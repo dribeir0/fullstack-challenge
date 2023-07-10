@@ -6,6 +6,7 @@ import {
   Param,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
@@ -23,8 +24,8 @@ export class ProjectsController {
 
   @SkipAuth()
   @Get()
-  findAll() {
-    return this.projectsService.findAll();
+  findAll(@Query('page') page: number = 1, @Query('limit') limit: number = 10) {
+    return this.projectsService.findAll(page, limit);
   }
 
   @SkipAuth()

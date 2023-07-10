@@ -4,6 +4,7 @@ import { ILike, Repository } from 'typeorm';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './entities/project.entity';
+import { PaginatedProjectsDto } from './dto/paginated-projects.dto';
 
 @Injectable()
 export class ProjectsService {
@@ -16,8 +17,20 @@ export class ProjectsService {
     return await this.projectsRepository.save(createProjectDto);
   }
 
-  async findAll(): Promise<Project[]> {
-    return this.projectsRepository.find();
+  async findAll(page: number, limit: number): Promise<PaginatedProjectsDto> {
+    const skip = (page - 1) * limit;
+    const [data, totalItems] = await this.projectsRepository.findAndCount({
+      skip,
+      take: limit,
+    });
+
+    return {
+      data,
+      page,
+      perPage: limit,
+      totalItems,
+      totalPages: Math.ceil(totalItems / limit),
+    };
   }
 
   async findSoftDeleted(): Promise<Project[]> {
