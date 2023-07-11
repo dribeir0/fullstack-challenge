@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import {
     CreateProjectDto,
     DeleteProjectResult,
@@ -89,12 +89,14 @@ export const deleteProject = createAsyncThunk<
 
 export interface ProjectsState {
     projects: ListResponse<Project> | undefined
+    searchTerm: string
     isLoading: boolean
     error?: string
 }
 
 const initialState: ProjectsState = {
     projects: undefined,
+    searchTerm: '',
     isLoading: false,
     error: undefined,
 }
@@ -102,7 +104,11 @@ const initialState: ProjectsState = {
 export const projectsSlice = createSlice({
     name: 'projects',
     initialState,
-    reducers: {},
+    reducers: {
+        search: (state, action: PayloadAction<string>) => {
+            state.searchTerm = action.payload
+        },
+    },
     extraReducers: (builder) => {
         builder
             .addCase(fetchProjects.pending, (state) => {
@@ -182,4 +188,7 @@ export const projectsSlice = createSlice({
             })
     },
 })
+
+export const { search } = projectsSlice.actions
+
 export default projectsSlice.reducer

@@ -55,6 +55,7 @@ export enum LanguageEN {
     CREATE_PROJECT = 'Create project',
     NO_PROJECTS_TITLE = "You don't have any projects yet.",
     NO_PROJECTS_DESCRIPTION = 'Create your first project now!',
+    NO_PROJECTS_FOUND_TITLE = 'No projects found',
     DONT_HAVE_AN_ACCOUNT = "Don't have an account?",
     SIGN_UP = 'Sign up',
     DELETED_PROJECTS = 'Deleted Projects',

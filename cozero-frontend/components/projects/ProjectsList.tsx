@@ -1,23 +1,17 @@
-import {
-    Container,
-    Flex,
-    Input,
-    Stack,
-    Text,
-    calc,
-    useToast,
-} from '@chakra-ui/react'
+import { Container, Flex, Stack, Text, useToast } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { ProjectsEmptyState } from './ProjectsEmptyState'
 import { DeletedProjectsEmptyState } from './DeletedProjectsEmptyState'
+import { ProjectsEmptySearchState } from './ProjectsEmptySearchState'
 import { translate } from '../../utils/language.utils'
 import ProjectItem from './ProjectItem'
 import { useNavigate } from 'react-router'
 import InfiniteScroll from 'react-infinite-scroll-component'
 import { Project } from '../../interfaces/project.interface'
 import { ListResponse } from '../../interfaces/list.interface'
-import { DebounceInput } from 'react-debounce-input'
 import { deleteProjectResponseTranslation } from '../../utils/project.utils'
+import { useSelector } from 'react-redux'
+import { RootState } from '../../store/store'
 
 export default function ProjectsList({
     projects,
@@ -39,6 +33,10 @@ export default function ProjectsList({
     const navigate = useNavigate()
     const toast = useToast()
 
+    const searchTerm = useSelector(
+        (state: RootState) => state.projectsState.searchTerm
+    )
+
     useEffect(() => {
         if (isProcessing && !isLoading) {
             const { title, description } = deleteProjectResponseTranslation(
@@ -46,14 +44,8 @@ export default function ProjectsList({
                 isDeleted
             )
             toast({
-                title: translate(
-                    !error ? 'PROJECT_DELETED' : 'PROJECTED_DELETE_ERROR'
-                ),
-                description: translate(
-                    !error
-                        ? 'PROJECT_DELETED_DESCRIPTION'
-                        : 'PROJECT_DELETE_ERROR_DESCRIPTION'
-                ),
+                title: title,
+                description: description,
                 status: !error ? 'success' : 'error',
                 duration: 9000,
                 isClosable: true,
@@ -65,6 +57,10 @@ export default function ProjectsList({
     if (projects?.totalItems === 0 && !isLoading) {
         if (isDeleted) {
             return <DeletedProjectsEmptyState />
+        }
+
+        if (searchTerm !== '') {
+            return <ProjectsEmptySearchState />
         }
         return <ProjectsEmptyState />
     }

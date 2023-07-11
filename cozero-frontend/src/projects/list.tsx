@@ -2,8 +2,8 @@ import { Input, Stack } from '@chakra-ui/react'
 import ProjectsList from '../../components/projects/ProjectsList'
 import { useSelector } from 'react-redux'
 import { AppDispatch, useAppDispatch, RootState } from '../../store/store'
-import { useEffect, useState } from 'react'
-import { deleteProject, fetchProjects } from '../../store/projectsSlice'
+import { useEffect } from 'react'
+import { deleteProject, fetchProjects, search } from '../../store/projectsSlice'
 import { DebounceInput } from 'react-debounce-input'
 import { translate } from '../../utils/language.utils'
 
@@ -22,7 +22,9 @@ const ProjectListPage = () => {
         (state: RootState) => state.projectsState.projects?.page
     )
 
-    const [searchTerm, setSearchTerm] = useState<string>('')
+    const searchTerm = useSelector(
+        (state: RootState) => state.projectsState.searchTerm
+    )
 
     const fetchMore = () => {
         dispatch(fetchProjects({ page: +(page ?? 0) + 1, searchTerm }))
@@ -33,7 +35,7 @@ const ProjectListPage = () => {
     }
 
     const onSearch = (searchTerm: string) => {
-        setSearchTerm(searchTerm)
+        dispatch(search(searchTerm))
         dispatch(fetchProjects({ page: 1, searchTerm }))
     }
 
@@ -53,6 +55,7 @@ const ProjectListPage = () => {
                 }}
                 minLength={3}
                 debounceTimeout={300}
+                value={searchTerm}
             />
             <ProjectsList
                 projects={projects}
