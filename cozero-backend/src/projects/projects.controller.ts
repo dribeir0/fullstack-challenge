@@ -15,9 +15,9 @@ import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { SkipAuth } from 'src/decorators/skipAuth.decorator';
-import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { Request } from 'express';
+import { User } from 'src/users/entities/user.entity';
 
 @Controller('projects')
 export class ProjectsController {
@@ -38,13 +38,18 @@ export class ProjectsController {
     return this.projectsService.findAll(page, limit, searchTerm);
   }
 
-  @SkipAuth()
+  @UseGuards(JwtAuthGuard)
   @Get('deleted')
   findSoftDeleted(
     @Query('page') page: number = 1,
     @Query('limit') limit: number = 10,
+    @Req() request: Request & { user: User },
   ) {
-    return this.projectsService.findSoftDeleted(page, limit);
+    return this.projectsService.findSoftDeleted(
+      page,
+      limit,
+      request.user.email,
+    );
   }
 
   @SkipAuth()
@@ -53,20 +58,29 @@ export class ProjectsController {
     return this.projectsService.findOne(+id);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Put(':id')
-  update(@Param('id') id: string, @Body() updateProjectDto: UpdateProjectDto) {
-    return this.projectsService.update(+id, updateProjectDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateProjectDto: UpdateProjectDto,
+    @Req() request: Request & { user: User },
+  ) {
+    return this.projectsService.update(
+      +id,
+      updateProjectDto,
+      request.user.email,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.projectsService.remove(+id);
+  remove(@Param('id') id: string, @Req() request: Request & { user: User }) {
+    return this.projectsService.remove(+id, request.user.email);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
-  restore(@Param('id') id: string, @Req() request: Request) {
-    console.log('🚀  file: projects.controller.ts:69  request:', request.user);
-    return this.projectsService.restore(+id);
+  restore(@Param('id') id: string, @Req() request: Request & { user: User }) {
+    return this.projectsService.restore(+id, request.user.email);
   }
 }
