@@ -17,6 +17,7 @@ import InfiniteScroll from 'react-infinite-scroll-component'
 import { Project } from '../../interfaces/project.interface'
 import { ListResponse } from '../../interfaces/list.interface'
 import { DebounceInput } from 'react-debounce-input'
+import { deleteProjectResponseTranslation } from '../../utils/project.utils'
 
 export default function ProjectsList({
     projects,
@@ -40,6 +41,10 @@ export default function ProjectsList({
 
     useEffect(() => {
         if (isProcessing && !isLoading) {
+            const { title, description } = deleteProjectResponseTranslation(
+                !error,
+                isDeleted
+            )
             toast({
                 title: translate(
                     !error ? 'PROJECT_DELETED' : 'PROJECTED_DELETE_ERROR'
@@ -67,7 +72,7 @@ export default function ProjectsList({
     return (
         <Container>
             <InfiniteScroll
-                dataLength={projects?.totalItems ?? 0} //This is important field to render the next data
+                dataLength={projects?.totalItems ?? 0}
                 next={fetchMore}
                 hasMore={(projects?.page ?? 0) < (projects?.totalPages ?? 0)}
                 loader={<h4>Loading...</h4>}

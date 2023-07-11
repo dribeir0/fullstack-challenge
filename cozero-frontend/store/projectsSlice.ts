@@ -140,6 +140,7 @@ export const projectsSlice = createSlice({
                 if (action.payload) {
                     state.projects?.data.unshift(action.payload)
                 }
+                state.isLoading = false
             })
             .addCase(createProject.rejected, (state, action) => {
                 state.isLoading = false
