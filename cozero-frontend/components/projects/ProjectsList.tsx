@@ -9,6 +9,7 @@ import {
 } from '@chakra-ui/react'
 import { useEffect, useState } from 'react'
 import { ProjectsEmptyState } from './ProjectsEmptyState'
+import { DeletedProjectsEmptyState } from './DeletedProjectsEmptyState'
 import { translate } from '../../utils/language.utils'
 import ProjectItem from './ProjectItem'
 import { useNavigate } from 'react-router'
@@ -57,6 +58,9 @@ export default function ProjectsList({
     }, [isProcessing, isLoading, error])
 
     if (projects?.totalItems === 0 && !isLoading) {
+        if (isDeleted) {
+            return <DeletedProjectsEmptyState />
+        }
         return <ProjectsEmptyState />
     }
 

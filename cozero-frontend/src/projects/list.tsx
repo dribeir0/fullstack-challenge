@@ -33,11 +33,14 @@ const ProjectListPage = () => {
 
     const onSearch = (searchTerm: string) => {
         setSearchTerm(searchTerm)
+        dispatch(fetchProjects({ page: 1, searchTerm }))
     }
 
     useEffect(() => {
-        dispatch(fetchProjects({ page: 1, searchTerm }))
-    }, [searchTerm])
+        if (!projects) {
+            dispatch(fetchProjects({ page: 1, searchTerm }))
+        }
+    }, [projects])
 
     return (
         <Stack spacing={8}>

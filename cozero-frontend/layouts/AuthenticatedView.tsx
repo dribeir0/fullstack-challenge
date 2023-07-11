@@ -17,7 +17,6 @@ export default function AuthenticatedView({ children }: Props) {
     }, [isUser])
 
     if (isUser) {
-        console.log('🚀  file: AuthenticatedView.tsx:20  isUser:', isUser)
         return <>{children}</>
     }
 
