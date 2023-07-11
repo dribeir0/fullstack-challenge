@@ -5,6 +5,7 @@ import { AppDispatch, useAppDispatch, RootState } from '../../store/store'
 import { useEffect, useState } from 'react'
 import { deleteProject, fetchProjects } from '../../store/projectsSlice'
 import { DebounceInput } from 'react-debounce-input'
+import { translate } from '../../utils/language.utils'
 
 const ProjectListPage = () => {
     const dispatch: AppDispatch = useAppDispatch()
@@ -46,7 +47,7 @@ const ProjectListPage = () => {
         <Stack spacing={8}>
             <DebounceInput
                 element={Input}
-                placeholder="Search by title or description"
+                placeholder={translate('SEARCH_PLACEHOLDER')}
                 onChange={(e) => {
                     onSearch(e.target.value)
                 }}

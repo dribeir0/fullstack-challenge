@@ -142,7 +142,6 @@ export default function ProjectForm() {
         id
             ? dispatch(updateProject(project as UpdateProjectDto))
             : dispatch(createProject(project))
-
         setIsProcessing(true)
     }
 
@@ -229,7 +228,7 @@ export default function ProjectForm() {
                 </FormControl>
                 <List spacing={3} id="listing-proposals">
                     {listing.map((item, index) => (
-                        <ListItem key={item.id}>
+                        <ListItem key={index}>
                             <Flex gap={4} alignItems="center">
                                 <ListIcon as={TbLeaf} color="green.500" />
                                 {item.name}
@@ -253,11 +252,14 @@ export default function ProjectForm() {
                 <Button
                     colorScheme="green"
                     type="submit"
-                    isLoading={isProcessing}
+                    isLoading={isMutationLoading}
                 >
                     {translate(id ? 'UPDATE' : 'CREATE')} {translate('PROJECT')}
                 </Button>
-                <Button isLoading={isProcessing} onClick={() => navigate(-1)}>
+                <Button
+                    isLoading={isMutationLoading}
+                    onClick={() => navigate(-1)}
+                >
                     {translate('GO_BACK')}
                 </Button>
             </Stack>

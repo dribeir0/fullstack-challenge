@@ -12,10 +12,4 @@ export class UsersController {
   create(@Body() user: UserLoginDto) {
     return this.userService.create(user);
   }
-
-  @SkipAuth()
-  @Get()
-  findAll() {
-    return this.userService.findAll();
-  }
 }

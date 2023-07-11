@@ -8,52 +8,82 @@ import {
 } from '../interfaces/project.interface'
 import ProjectsService from '../services/ProjectsService'
 import { ListResponse } from '../interfaces/list.interface'
+import { GenericError } from '../interfaces/generic-error.interface'
+import { translate } from '../utils/language.utils'
 
 export const fetchProjects = createAsyncThunk<
-    ListResponse<Project> | undefined,
+    ListResponse<Project>,
     { page: number; searchTerm: string },
     { rejectValue: string }
 >('fetchProjects', async ({ page, searchTerm }, { rejectWithValue }) => {
     try {
-        return await ProjectsService.fetchProjects(page, searchTerm)
+        const resp = await ProjectsService.fetchProjects(page, searchTerm)
+        if (!resp) {
+            return rejectWithValue(translate('DEFAULT_ERROR'))
+        }
+        if ((resp as GenericError).statusCode) {
+            return rejectWithValue((resp as GenericError).message)
+        }
+        return resp as ListResponse<Project>
     } catch (e) {
-        return rejectWithValue('Failed to fetch projects')
+        return rejectWithValue(translate('DEFAULT_ERROR'))
     }
 })
 
 export const createProject = createAsyncThunk<
-    Project | undefined,
+    Project,
     CreateProjectDto,
     { rejectValue: string }
 >('createProject', async (project, { rejectWithValue }) => {
     try {
-        return await ProjectsService.createProject(project)
+        const resp = await ProjectsService.createProject(project)
+        if (!resp) {
+            return rejectWithValue(translate('DEFAULT_ERROR'))
+        }
+        if ((resp as GenericError).statusCode) {
+            return rejectWithValue((resp as GenericError).message)
+        }
+        return resp as Project
     } catch (e) {
-        return rejectWithValue('Failed to create project')
+        return rejectWithValue(translate('DEFAULT_ERROR'))
     }
 })
 
 export const updateProject = createAsyncThunk<
-    UpdateProjectResult | undefined,
+    UpdateProjectResult,
     UpdateProjectDto,
     { rejectValue: string }
 >('updateProject', async (project, { rejectWithValue }) => {
     try {
-        return await ProjectsService.updateProject(project)
+        const resp = await ProjectsService.updateProject(project)
+        if (!resp) {
+            return rejectWithValue(translate('DEFAULT_ERROR'))
+        }
+        if ((resp as GenericError).statusCode) {
+            return rejectWithValue((resp as GenericError).message)
+        }
+        return resp as UpdateProjectResult
     } catch (e) {
-        return rejectWithValue('Failed to update project')
+        return rejectWithValue(translate('DEFAULT_ERROR'))
     }
 })
 
 export const deleteProject = createAsyncThunk<
-    DeleteProjectResult | undefined,
+    DeleteProjectResult,
     string,
     { rejectValue: string }
 >('deleteProject', async (id, { rejectWithValue }) => {
     try {
-        return await ProjectsService.deleteProject(id)
-    } catch (e) {
-        return rejectWithValue('Failed to delete project')
+        const resp = await ProjectsService.deleteProject(id)
+        if (!resp) {
+            return rejectWithValue(translate('DEFAULT_ERROR'))
+        }
+        if ((resp as GenericError).statusCode) {
+            return rejectWithValue((resp as GenericError).message)
+        }
+        return resp as DeleteProjectResult
+    } catch (e: any) {
+        return rejectWithValue(translate('DEFAULT_ERROR'))
     }
 })
 
@@ -100,12 +130,24 @@ export const projectsSlice = createSlice({
             })
             .addCase(fetchProjects.rejected, (state, action) => {
                 state.isLoading = false
-                state.error = action.error.message || 'Something went wrong'
+                state.error = action.payload
+            })
+            .addCase(createProject.pending, (state) => {
+                state.isLoading = true
+                state.error = undefined
             })
             .addCase(createProject.fulfilled, (state, action) => {
                 if (action.payload) {
                     state.projects?.data.unshift(action.payload)
                 }
+            })
+            .addCase(createProject.rejected, (state, action) => {
+                state.isLoading = false
+                state.error = action.payload
+            })
+            .addCase(updateProject.pending, (state) => {
+                state.isLoading = true
+                state.error = undefined
             })
             .addCase(updateProject.fulfilled, (state, action) => {
                 if (action.payload && state.projects) {
@@ -115,6 +157,15 @@ export const projectsSlice = createSlice({
                             : project
                     )
                 }
+                state.isLoading = false
+            })
+            .addCase(updateProject.rejected, (state, action) => {
+                state.isLoading = false
+                state.error = action.payload
+            })
+            .addCase(deleteProject.pending, (state) => {
+                state.isLoading = true
+                state.error = undefined
             })
             .addCase(deleteProject.fulfilled, (state, action) => {
                 if (action.payload && state.projects) {
@@ -122,6 +173,11 @@ export const projectsSlice = createSlice({
                         (project) => project.id !== action.meta.arg
                     )
                 }
+                state.isLoading = false
+            })
+            .addCase(deleteProject.rejected, (state, action) => {
+                state.isLoading = false
+                state.error = action.payload
             })
     },
 })

@@ -64,7 +64,7 @@ export const ProjectViewPage = () => {
                 <Avatar name={project.owner} size="md" />
                 <Stack>
                     <Text color="gray.500" fontWeight="light">
-                        Created by {project.owner}
+                        {translate('CREATE_BY')} {project.owner}
                     </Text>
                     <TimeAgeComponent
                         color="gray.500"

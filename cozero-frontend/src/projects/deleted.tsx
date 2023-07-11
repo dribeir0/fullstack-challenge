@@ -43,7 +43,7 @@ const DeletedProjectsPage = () => {
     return (
         <AuthenticatedView>
             <Stack spacing={8}>
-                <Heading>Deleted Projects</Heading>
+                <Heading>{translate('DELETED_PROJECTS')}</Heading>
                 <ProjectsList
                     projects={projects}
                     error={error}

@@ -8,10 +8,9 @@ import {
     Stack,
     useToast,
 } from '@chakra-ui/react'
-import { FormEvent, useEffect, useState } from 'react'
+import { FormEvent, useState } from 'react'
 import { useNavigate } from 'react-router'
 import { useAuth } from '../hooks/useAuth'
-import UserService from '../services/UserService'
 import { translate } from '../utils/language.utils'
 
 interface Props {
@@ -34,9 +33,10 @@ const LoginPage = ({ isSignUp }: Props) => {
                 ? await signUp({ email, password })
                 : await logIn({ email, password })
         } catch (error: any) {
-            console.log('error registering user', error)
             toast({
-                title: isSignUp ? 'Error creating user' : 'Error login',
+                title: isSignUp
+                    ? translate('ERROR_CREATE')
+                    : translate('ERROR_LOGIN'),
                 description: error.message,
                 status: 'error',
                 duration: 9000,
@@ -61,7 +61,7 @@ const LoginPage = ({ isSignUp }: Props) => {
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             id="email"
-                            placeholder="Email"
+                            placeholder={translate('EMAIL')}
                         />
                     </FormControl>
                     <FormControl isRequired>
