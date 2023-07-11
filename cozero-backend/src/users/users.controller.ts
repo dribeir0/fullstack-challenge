@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post } from '@nestjs/common';
-import { SkipAuth } from 'src/decorators/skipAuth.decorator';
 import { UserLoginDto } from './dto/user-login.dto';
 import { UsersService } from './users.service';
+import { SkipAuth } from '../decorators/skipAuth.decorator';
 
 @Controller('users')
 export class UsersController {

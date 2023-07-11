@@ -11,13 +11,13 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
+import { Request } from 'express';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
-import { SkipAuth } from 'src/decorators/skipAuth.decorator';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-import { Request } from 'express';
-import { User } from 'src/users/entities/user.entity';
+import { SkipAuth } from '../decorators/skipAuth.decorator';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { User } from '../users/entities/user.entity';
 
 @Controller('projects')
 export class ProjectsController {
