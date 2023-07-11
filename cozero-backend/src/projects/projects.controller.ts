@@ -8,11 +8,16 @@ import {
   Put,
   Query,
   Patch,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { SkipAuth } from 'src/decorators/skipAuth.decorator';
+import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Request } from 'express';
 
 @Controller('projects')
 export class ProjectsController {
@@ -53,13 +58,15 @@ export class ProjectsController {
     return this.projectsService.update(+id, updateProjectDto);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.projectsService.remove(+id);
   }
 
   @Patch(':id')
-  restore(@Param('id') id: string) {
+  restore(@Param('id') id: string, @Req() request: Request) {
+    console.log('🚀  file: projects.controller.ts:69  request:', request.user);
     return this.projectsService.restore(+id);
   }
 }
