@@ -22,6 +22,7 @@ class ProjectsService {
             )
         } catch (e) {
             console.log('Error fetching projects', e)
+            throw new Error()
         }
     }
 
@@ -32,6 +33,7 @@ class ProjectsService {
             return HTTPService.get(`projects/${id}`)
         } catch (e) {
             console.log('Error fetching project', e)
+            throw new Error()
         }
     }
 
@@ -47,6 +49,7 @@ class ProjectsService {
             )
         } catch (e) {
             console.log('Error updating project', e)
+            throw new Error()
         }
     }
 
@@ -62,6 +65,7 @@ class ProjectsService {
             )
         } catch (e) {
             console.log('Error creating project', e)
+            throw new Error()
         }
     }
 
@@ -73,6 +77,7 @@ class ProjectsService {
             return HTTPService.delete(`projects/${id}`, jwtToken)
         } catch (e) {
             console.log('Error deleting project', e)
+            throw new Error()
         }
     }
 
@@ -84,6 +89,7 @@ class ProjectsService {
             return HTTPService.patch(`projects/${id}`, jwtToken)
         } catch (e) {
             console.log('Error restoring project', e)
+            throw new Error()
         }
     }
 
@@ -98,6 +104,7 @@ class ProjectsService {
             )
         } catch (e) {
             console.log('Error fetching deleted projects', e)
+            throw new Error()
         }
     }
 }

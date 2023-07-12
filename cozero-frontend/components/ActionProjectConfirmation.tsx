@@ -40,13 +40,13 @@ export default function ActionProjectConfirmation({
                 <AlertDialogContent>
                     <AlertDialogHeader>
                         {isDeleted
-                            ? 'Sure you want to restore?'
+                            ? translate('RESTORE_PROJECT')
                             : translate('DELETE_PROJECT')}
                     </AlertDialogHeader>
                     <AlertDialogCloseButton />
                     <AlertDialogBody>
                         {isDeleted
-                            ? 'You are restoring an already deleted project'
+                            ? translate('RESTORE_PROJECT_DESCRIPTION')
                             : translate('DELETE_PROJECT_DESCRIPTION')}
                     </AlertDialogBody>
                     <AlertDialogFooter>

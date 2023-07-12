@@ -18,6 +18,8 @@ export enum LanguageEN {
     VIEW_FULL_PROJECT = 'View full project',
     DELETE_PROJECT = 'Delete project?',
     DELETE_PROJECT_DESCRIPTION = 'Are you sure you want to delete this project?',
+    RESTORE_PROJECT = 'Sure you want to restore?',
+    RESTORE_PROJECT_DESCRIPTION = 'Are you sure you want to delete this project?',
     YES = 'Yes',
     NO = 'No',
     CO2E_CALCULATION_C2A = 'Learn how to calculate your CO2e emissions here.',
