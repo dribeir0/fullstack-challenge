@@ -1,22 +1,22 @@
 import { useEffect } from 'react'
-import LocalStorageService from '../services/LocalStorageService'
 import { useNavigate } from 'react-router'
+import { useAuth } from '../hooks/useAuth'
 
 interface Props {
     children: React.ReactNode
 }
 
 export default function AuthenticatedView({ children }: Props) {
-    const isUser = LocalStorageService.getJwtToken()
+    const { user } = useAuth()
     const navigate = useNavigate()
 
     useEffect(() => {
-        if (!isUser) {
+        if (!user) {
             navigate('/sign-in')
         }
-    }, [isUser])
+    }, [user])
 
-    if (isUser) {
+    if (user) {
         return <>{children}</>
     }
 

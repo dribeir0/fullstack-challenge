@@ -4,6 +4,7 @@ import {
     CreateProjectDto,
     DeleteProjectResult,
     Project,
+    RestoreProjectResult,
     UpdateProjectDto,
     UpdateProjectResult,
 } from '../interfaces/project.interface'
@@ -77,7 +78,7 @@ class ProjectsService {
 
     public async restoreProject(
         id: string
-    ): Promise<DeleteProjectResult | GenericError | undefined> {
+    ): Promise<RestoreProjectResult | GenericError | undefined> {
         try {
             const jwtToken = LocalStorageService.getJwtToken()
             return HTTPService.patch(`projects/${id}`, jwtToken)

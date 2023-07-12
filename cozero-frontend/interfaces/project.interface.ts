@@ -1,31 +1,37 @@
 export interface Project {
-    id: string;
-    name: string;
-    description: string;
+    id: string
+    name: string
+    description: string
     co2EstimateReduction: number[]
-    owner: string;
+    owner: string
     listing: string[]
-    createdAt: string;
-    updatedAt: string;
+    createdAt: string
+    updatedAt: string
 }
 
 export interface ListItem {
-    id: string;
-    name: string;
+    id: string
+    name: string
 }
 
-export type CreateProjectDto = Omit<Project, 'createdAt' | 'updatedAt' | 'id' | 'co2EstimateReduction'> & {
+export type CreateProjectDto = Omit<
+    Project,
+    'createdAt' | 'updatedAt' | 'id' | 'co2EstimateReduction'
+> & {
     co2EstimateReduction: number[]
 }
 
 export type UpdateProjectDto = CreateProjectDto & {
-    id: string;
+    id: string
 }
 
-export type ProjectForm = Omit<CreateProjectDto, 'listing' | 'co2EstimateReduction'> & {
+export type ProjectForm = Omit<
+    CreateProjectDto,
+    'listing' | 'co2EstimateReduction'
+> & {
     listing: ListItem[]
-    co2EstimateReduction: { min: number, max: number };
-};
+    co2EstimateReduction: { min: number; max: number }
+}
 
 // TypeORM response for a project deletion
 export interface DeleteProjectResult {
@@ -33,4 +39,6 @@ export interface DeleteProjectResult {
     affected: number
 }
 
-export type UpdateProjectResult = DeleteProjectResult;
+export type UpdateProjectResult = DeleteProjectResult
+
+export type RestoreProjectResult = DeleteProjectResult
