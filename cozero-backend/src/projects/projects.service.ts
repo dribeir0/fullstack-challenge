@@ -1,10 +1,11 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ILike, IsNull, Not, Repository } from 'typeorm';
 import { CreateProjectDto } from './dto/create-project.dto';
 import { UpdateProjectDto } from './dto/update-project.dto';
 import { Project } from './entities/project.entity';
 import { PaginatedProjectsDto } from './dto/paginated-projects.dto';
+import { NotOwnerException } from '../exceptions/not-owner.exception';
 
 @Injectable()
 export class ProjectsService {
@@ -95,11 +96,5 @@ export class ProjectsService {
       throw new NotOwnerException();
     }
     return this.projectsRepository.restore({ id });
-  }
-}
-
-export class NotOwnerException extends HttpException {
-  constructor() {
-    super('This user is not the owner', HttpStatus.BAD_REQUEST);
   }
 }
