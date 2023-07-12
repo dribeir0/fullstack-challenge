@@ -30,6 +30,9 @@ export const ProjectViewPage = () => {
     const isLoading = useSelector(
         (state: RootState) => state.projectDetailsState.isLoading
     )
+    const isError = useSelector(
+        (state: RootState) => state.projectDetailsState.error
+    )
     const { id } = useParams<{ id: string }>()
 
     useEffect(() => {
@@ -38,7 +41,11 @@ export const ProjectViewPage = () => {
         }
     }, [id])
 
-    if (!project) {
+    if (isError) {
+        return <div>{translate('DEFAULT_ERROR')}</div>
+    }
+
+    if (isLoading || !project) {
         return <div>Loading...</div>
     }
 
