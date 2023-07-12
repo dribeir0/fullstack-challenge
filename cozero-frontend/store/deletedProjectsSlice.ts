@@ -3,11 +3,14 @@ import {
     CreateProjectDto,
     DeleteProjectResult,
     Project,
+    RestoreProjectResult,
     UpdateProjectDto,
     UpdateProjectResult,
 } from '../interfaces/project.interface'
 import ProjectsService from '../services/ProjectsService'
 import { ListResponse } from '../interfaces/list.interface'
+import { GenericError } from '../interfaces/generic-error.interface'
+import { translate } from '../utils/language.utils'
 
 export const fetchDeletedProjects = createAsyncThunk<
     ListResponse<Project> | undefined,
@@ -15,19 +18,33 @@ export const fetchDeletedProjects = createAsyncThunk<
     { rejectValue: string }
 >('fetchDeletedProjects', async (page, { rejectWithValue }) => {
     try {
-        return await ProjectsService.fetchDeletedProjects(page)
+        const resp = await ProjectsService.fetchDeletedProjects(page)
+        if (!resp) {
+            return rejectWithValue(translate('DEFAULT_ERROR'))
+        }
+        if ((resp as GenericError).statusCode) {
+            return rejectWithValue((resp as GenericError).message)
+        }
+        return resp as ListResponse<Project>
     } catch (e) {
         return rejectWithValue('Failed to fetch projects')
     }
 })
 
 export const restoreProject = createAsyncThunk<
-    UpdateProjectResult | undefined, // FIXME: correct type
+    RestoreProjectResult,
     string,
     { rejectValue: string }
 >('restoreProject', async (id, { rejectWithValue }) => {
     try {
-        return await ProjectsService.restoreProject(id)
+        const resp = await ProjectsService.restoreProject(id)
+        if (!resp) {
+            return rejectWithValue(translate('DEFAULT_ERROR'))
+        }
+        if ((resp as GenericError).statusCode) {
+            return rejectWithValue((resp as GenericError).message)
+        }
+        return resp as RestoreProjectResult
     } catch (e) {
         return rejectWithValue('Failed to delete project')
     }
