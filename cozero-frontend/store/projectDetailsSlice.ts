@@ -1,14 +1,23 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { Project } from '../interfaces/project.interface'
 import ProjectsService from '../services/ProjectsService'
+import { GenericError } from '../interfaces/generic-error.interface'
+import { translate } from '../utils/language.utils'
 
 export const fetchProjectById = createAsyncThunk<
-    Project | undefined,
+    Project,
     string,
     { rejectValue: string }
 >('fetchProjectById', async (id, { rejectWithValue }) => {
     try {
-        return await ProjectsService.fetchProjectById(id)
+        const resp = await ProjectsService.fetchProjectById(id)
+        if (!resp) {
+            return rejectWithValue(translate('DEFAULT_ERROR'))
+        }
+        if ((resp as GenericError).statusCode) {
+            return rejectWithValue((resp as GenericError).message)
+        }
+        return resp as Project
     } catch (e) {
         return rejectWithValue('Failed to fetch projects')
     }
@@ -42,7 +51,7 @@ export const projectDetailsSlice = createSlice({
             })
             .addCase(fetchProjectById.rejected, (state, action) => {
                 state.isLoading = false
-                state.error = action.error.message || 'Something went wrong'
+                state.error = action.payload
             })
     },
 })
