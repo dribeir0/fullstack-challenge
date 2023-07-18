@@ -1,12 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import {
-    CreateProjectDto,
-    DeleteProjectResult,
-    Project,
-    RestoreProjectResult,
-    UpdateProjectDto,
-    UpdateProjectResult,
-} from '../interfaces/project.interface'
+import { Project, RestoreProjectResult } from '../interfaces/project.interface'
 import ProjectsService from '../services/ProjectsService'
 import { ListResponse } from '../interfaces/list.interface'
 import { GenericError } from '../interfaces/generic-error.interface'
