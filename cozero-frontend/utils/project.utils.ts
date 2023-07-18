@@ -62,7 +62,7 @@ export const deleteProjectResponseTranslation = (
 
     return {
         title: translate(
-            isDelete ? 'PROJECT_RESTORED_ERROR' : 'PROJECTED_DELETE_ERROR'
+            isDelete ? 'PROJECTED_RESTORED_ERROR' : 'PROJECTED_DELETE_ERROR'
         ),
         description: translate(
             isDelete
