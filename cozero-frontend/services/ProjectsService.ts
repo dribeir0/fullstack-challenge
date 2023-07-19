@@ -1,66 +1,112 @@
-import { CreateProjectDto, DeleteProjectResult, Project, UpdateProjectDto, UpdateProjectResult } from "../interfaces/project.interface";
-import HTTPService from "./HTTPService";
-import LocalStorageService from "./LocalStorageService";
+import { GenericError } from '../interfaces/generic-error.interface'
+import { ListResponse } from '../interfaces/list.interface'
+import {
+    CreateProjectDto,
+    DeleteProjectResult,
+    Project,
+    RestoreProjectResult,
+    UpdateProjectDto,
+    UpdateProjectResult,
+} from '../interfaces/project.interface'
+import HTTPService from './HTTPService'
+import LocalStorageService from './LocalStorageService'
 
 class ProjectsService {
-    public async fetchProjects(): Promise<Project[] | undefined> {
+    public async fetchProjects(
+        page: number,
+        searchTerm: string = ''
+    ): Promise<ListResponse<Project> | GenericError | undefined> {
         try {
-            const projects = await HTTPService.get<Project[]>(`projects`)
-
-            return this.sortProjects(projects)
-        }
-        catch (e) {
-            console.log('Error fetching projects', e)
-            return Promise.resolve([])
-        }
-    }
-
-    public async fetchProjectById(id: string): Promise<Project | undefined> {
-        try {
-            return HTTPService.get<Project>(`projects/${id}`)
-        }
-        catch (e) {
-            console.log('Error fetching project', e)
-            return Promise.resolve(undefined)
-        }
-    }
-
-    public async updateProject(updatedProject: UpdateProjectDto): Promise<UpdateProjectResult | undefined> {
-        try {
-            const jwtToken = LocalStorageService.getJwtToken()
-            return HTTPService.put(`projects/${updatedProject.id}`, updatedProject, jwtToken)
+            return await HTTPService.get(
+                `projects?page=${page}&searchTerm=${searchTerm}`
+            )
         } catch (e) {
-            console.log('Error deleting project', e)
+            console.log('Error fetching projects', e)
+            throw new Error()
         }
     }
 
+    public async fetchProjectById(
+        id: string
+    ): Promise<Project | GenericError | undefined> {
+        try {
+            return HTTPService.get(`projects/${id}`)
+        } catch (e) {
+            console.log('Error fetching project', e)
+            throw new Error()
+        }
+    }
 
-    public async createProject(createProjectDto: CreateProjectDto): Promise<Project | undefined> {
+    public async updateProject(
+        updatedProject: UpdateProjectDto
+    ): Promise<UpdateProjectResult | GenericError | undefined> {
         try {
             const jwtToken = LocalStorageService.getJwtToken()
-            return HTTPService.post<Project>(`projects/create`, createProjectDto, jwtToken)
-        }
-        catch (e) {
-            console.log('Error creating project', e)
+            return HTTPService.put(
+                `projects/${updatedProject.id}`,
+                updatedProject,
+                jwtToken
+            )
+        } catch (e) {
+            console.log('Error updating project', e)
+            throw new Error()
         }
     }
 
-    public async deleteProject(id: string): Promise<DeleteProjectResult | undefined> {
+    public async createProject(
+        createProjectDto: CreateProjectDto
+    ): Promise<Project | GenericError | undefined> {
+        try {
+            const jwtToken = LocalStorageService.getJwtToken()
+            return HTTPService.post(
+                `projects/create`,
+                createProjectDto,
+                jwtToken
+            )
+        } catch (e) {
+            console.log('Error creating project', e)
+            throw new Error()
+        }
+    }
+
+    public async deleteProject(
+        id: string
+    ): Promise<DeleteProjectResult | GenericError | undefined> {
         try {
             const jwtToken = LocalStorageService.getJwtToken()
             return HTTPService.delete(`projects/${id}`, jwtToken)
         } catch (e) {
             console.log('Error deleting project', e)
+            throw new Error()
         }
     }
 
-    public sortProjects = (projects: Project[] | undefined) => {
-        return projects?.sort((a, b) => {
-            return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+    public async restoreProject(
+        id: string
+    ): Promise<RestoreProjectResult | GenericError | undefined> {
+        try {
+            const jwtToken = LocalStorageService.getJwtToken()
+            return HTTPService.patch(`projects/${id}`, jwtToken)
+        } catch (e) {
+            console.log('Error restoring project', e)
+            throw new Error()
         }
-        );
     }
 
+    public async fetchDeletedProjects(
+        page: number
+    ): Promise<ListResponse<Project> | GenericError | undefined> {
+        try {
+            const jwtToken = LocalStorageService.getJwtToken()
+            return await HTTPService.get(
+                `projects/deleted?page=${page}`,
+                jwtToken
+            )
+        } catch (e) {
+            console.log('Error fetching deleted projects', e)
+            throw new Error()
+        }
+    }
 }
 
 export default new ProjectsService()

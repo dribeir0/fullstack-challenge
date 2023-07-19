@@ -1,5 +1,4 @@
-import { Languages } from "../enums/languages.enum"
-import { LanguageEN, LanguageDictionary } from "../lang/en"
+import { LanguageEN, LanguageDictionary } from '../lang/en'
 
 export const translate = (key: LanguageDictionary) => {
     return LanguageEN[key]

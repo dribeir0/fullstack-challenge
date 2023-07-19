@@ -1,7 +1,7 @@
-import {  Flex } from "@chakra-ui/react"
-import MenuItem from "./MenuItem"
+import { Flex } from '@chakra-ui/react'
+import MenuItem from './MenuItem'
 
-export default function Menu() {    
+export default function Menu() {
     return (
         <Flex gap={10}>
             <MenuItem href="/" title="Home" />

@@ -1,9 +1,10 @@
-import { useCallback, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { AuthContext } from "../context/auth";
-import { UserLoginDTO, UserRegistrationDTO } from "../interfaces/user.dto";
-import LocalStorageService from "../services/LocalStorageService"
-import UserService from "../services/UserService";
+import { useCallback, useContext, useEffect, useState } from 'react'
+import { useNavigate } from 'react-router'
+import { AuthContext } from '../context/auth'
+import { UserLoginDTO, UserRegistrationDTO } from '../interfaces/user.dto'
+import LocalStorageService from '../services/LocalStorageService'
+import UserService from '../services/UserService'
+import { GenericError } from '../interfaces/generic-error.interface'
 
 export const useAuth = () => {
     const { context, setContext } = useContext(AuthContext)
@@ -11,64 +12,73 @@ export const useAuth = () => {
     const navigate = useNavigate()
 
     const signIn = async (user: UserRegistrationDTO) => {
-        const loggedUser = await UserService.login(user);
+        const loggedUser = await UserService.login(user)
+
+        if ((loggedUser as GenericError)?.statusCode) {
+            throw new Error((loggedUser as GenericError).message)
+        }
+
         setContext({
             ...context,
-            user: loggedUser
+            user: loggedUser as UserLoginDTO,
         })
-        LocalStorageService.setItem("user", loggedUser);
+        LocalStorageService.setItem('user', loggedUser)
         if (loggedUser) {
             navigate('/')
-            return;
+            return
         }
 
         return null
     }
 
     const signUp = useCallback(async (user: UserRegistrationDTO) => {
-        const createdUser = await UserService.register(user);
+        const createdUser = await UserService.register(user)
+
+        if ((createdUser as GenericError)?.statusCode) {
+            throw new Error((createdUser as GenericError).message)
+        }
+
         if (createdUser) {
-            LocalStorageService.setItem("user", createdUser);
+            LocalStorageService.setItem('user', createdUser)
         }
 
         setContext({
             ...context,
-            user: createdUser
+            user: createdUser as UserLoginDTO,
         })
 
         navigate('/')
-        return createdUser;
-    }, []);
+        return createdUser
+    }, [])
 
     const signOut = () => {
         setContext({
             ...context,
-            user: undefined
+            user: undefined,
         })
 
-        LocalStorageService.removeItem("user");
+        LocalStorageService.removeItem('user')
         navigate('/')
     }
 
     useEffect(() => {
-        const user = LocalStorageService.getItem<UserLoginDTO>('user');
+        const user = LocalStorageService.getItem<UserLoginDTO>('user')
         if (user) {
             setContext({
                 ...context,
-                user
+                user,
             })
         }
-    }, []);
+    }, [])
 
     useEffect(() => {
         if (!user) {
-            LocalStorageService.removeItem("user")
+            LocalStorageService.removeItem('user')
             return
         }
 
-        LocalStorageService.setItem("user", user);
+        LocalStorageService.setItem('user', user)
     }, [user])
 
-
-    return { user, logIn: signIn, signOut, signUp };
+    return { user, logIn: signIn, signOut, signUp }
 }
